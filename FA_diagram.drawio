@@ -1,10 +1,10 @@
 <mxfile host="app.diagrams.net">
   <diagram name="Страница-1" id="U4m8dKytYdFeM4Zrdf6P">
-    <mxGraphModel dx="2252" dy="1018" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="2102" dy="950" grid="0" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
-        <mxCell id="sS2BcRnMNinN6CuMsuTh-1" parent="1" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;html=1;whiteSpace=wrap;" value="DarkStor/E1" vertex="1">
+        <mxCell id="sS2BcRnMNinN6CuMsuTh-1" parent="1" style="shape=table;startSize=30;container=1;collapsible=1;childLayout=tableLayout;fixedRows=1;rowLines=0;fontStyle=1;align=center;resizeLast=1;html=1;whiteSpace=wrap;" value="DarkStore/E1" vertex="1">
           <mxGeometry height="212" width="163" x="1356" y="192" as="geometry">
             <mxRectangle height="30" width="70" x="320" y="220" as="alternateBounds" />
           </mxGeometry>
@@ -525,7 +525,7 @@
             <mxRectangle height="87" width="60" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="sS2BcRnMNinN6CuMsuTh-117" parent="sS2BcRnMNinN6CuMsuTh-115" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;html=1;whiteSpace=wrap;" value="decision_type (text)&lt;div&gt;decided_at (datetime)&lt;/div&gt;" vertex="1">
+        <mxCell id="sS2BcRnMNinN6CuMsuTh-117" parent="sS2BcRnMNinN6CuMsuTh-115" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;html=1;whiteSpace=wrap;" value="decision_type (text)&lt;div&gt;decision_source(text)&lt;br&gt;&lt;div&gt;decided_at (datetime)&lt;/div&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="87" width="153.4285714172181" x="60" as="geometry">
             <mxRectangle height="87" width="153.4285714172181" as="alternateBounds" />
           </mxGeometry>
@@ -810,7 +810,7 @@
             <mxRectangle height="164" width="60" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="sS2BcRnMNinN6CuMsuTh-182" parent="sS2BcRnMNinN6CuMsuTh-180" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;html=1;whiteSpace=wrap;" value="arrived_at (datetime)&lt;div&gt;delivered_at (datetime)&lt;/div&gt;&lt;div&gt;result (bool)&lt;/div&gt;&lt;div&gt;cancellation_reason (text)&lt;/div&gt;&lt;div&gt;status (text)&lt;/div&gt;&lt;div&gt;handle_to_couriei_at (datetime)&lt;/div&gt;&lt;div&gt;route_position (int)&lt;/div&gt;" vertex="1">
+        <mxCell id="sS2BcRnMNinN6CuMsuTh-182" parent="sS2BcRnMNinN6CuMsuTh-180" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;html=1;whiteSpace=wrap;" value="arrived_at (datetime)&lt;div&gt;delivered_at (datetime)&lt;/div&gt;&lt;div&gt;cancellation_reason (text)&lt;/div&gt;&lt;div&gt;status (text)&lt;/div&gt;&lt;div&gt;handle_to_couriei_at (datetime)&lt;/div&gt;&lt;div&gt;route_position (int)&lt;/div&gt;" vertex="1">
           <mxGeometry height="164" width="120" x="60" as="geometry">
             <mxRectangle height="164" width="120" as="alternateBounds" />
           </mxGeometry>
@@ -1385,7 +1385,7 @@
             <mxRectangle height="121" width="60" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="sS2BcRnMNinN6CuMsuTh-305" parent="sS2BcRnMNinN6CuMsuTh-303" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;html=1;whiteSpace=wrap;" value="created_at (datetime)&lt;div&gt;planned_amount (datetime)&lt;/div&gt;&lt;div&gt;final_amount (datetime)&lt;/div&gt;&lt;div&gt;total_weight (int)&lt;/div&gt;&lt;div&gt;status (text)&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
+        <mxCell id="sS2BcRnMNinN6CuMsuTh-305" parent="sS2BcRnMNinN6CuMsuTh-303" style="shape=partialRectangle;connectable=0;fillColor=none;top=0;left=0;bottom=0;right=0;align=left;spacingLeft=6;overflow=hidden;html=1;whiteSpace=wrap;" value="created_at (datetime)&lt;div&gt;planned_amount (double)&lt;/div&gt;&lt;div&gt;final_amount (double)&lt;/div&gt;&lt;div&gt;total_weight (double)&lt;/div&gt;&lt;div&gt;status (text)&lt;/div&gt;&lt;div&gt;&lt;br&gt;&lt;/div&gt;" vertex="1">
           <mxGeometry height="121" width="120" x="60" as="geometry">
             <mxRectangle height="121" width="120" as="alternateBounds" />
           </mxGeometry>
