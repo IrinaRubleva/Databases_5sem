@@ -295,5 +295,6 @@ CREATE TABLE WriteOff (
     FOREIGN KEY (ID_Batch) REFERENCES Batch(ID_Batch),
     FOREIGN KEY (ID_Employee) REFERENCES Employee(ID_Employee),
     CONSTRAINT writeoff_qty_check CHECK (quantity > 0),
-    CONSTRAINT writeoff_conf_status_check CHECK (confirmation_status IN ('Pending', 'Confirmed', 'Rejected'))
+    CONSTRAINT writeoff_conf_status_check CHECK (confirmation_status IN ('Pending', 'Confirmed', 'Rejected')),
+    CONSTRAINT reason_check CHECK(reason IN ('Expirated', 'Damaged', 'OK'))
 );

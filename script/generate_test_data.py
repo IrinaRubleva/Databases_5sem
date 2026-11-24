@@ -248,13 +248,24 @@ def generate_batches(cur, darkstores: list, product_ids: list, vendor_ids: list)
 def generate_prices(cur, darkstores: list, product_ids: list):
     data = []
     now = datetime.datetime.now(datetime.timezone.utc)
-
     for ds_id, _ in darkstores:
         for prod_id in product_ids:
-            price = round(random.uniform(30, 2000), 2)
-            valid_from = now - datetime.timedelta(days=random.randint(0, 30))
-            data.append((prod_id, ds_id, price, 'RUB', valid_from, None))
+            n_prices = random.randint(0, 2)
+            base_price = round(random.uniform(30, 2000), 2)
+            
+            for i in range(n_prices):
+                
+                change_factor = random.uniform(0.85, 1.15)
+                price = round(base_price * change_factor, 2)
 
+                
+                days_ago = 30 - (i * random.randint(5, 10))
+                valid_from = now - datetime.timedelta(days=days_ago)
+                valid_to = valid_from + datetime.timedelta(days=random.randint(5, 10))
+                
+                data.append((prod_id, ds_id, price, 'RUB', valid_from, valid_to))
+                base_price = price  
+    
     query = """
         INSERT INTO Price (ID_Product, ID_Darkstore, price_value, currency, valid_from, valid_to)
         VALUES %s
@@ -327,7 +338,7 @@ def generate_orders_and_flow(cur, customer_ids, darkstores, product_ids,
 
                 status = random.choices(
                     ['Planned', 'Substituted', 'Cancelled', 'Assembled'],
-                    weights=[40, 20, 10, 30]
+                    weights=[40, 2.5, 0.5, 57]
                 )[0]
                 positions_data.append((prod_id, qty, unit_price, status))
 
@@ -357,7 +368,29 @@ def generate_orders_and_flow(cur, customer_ids, darkstores, product_ids,
                                                unit_amount, status)
                     VALUES (%s, %s, %s, %s, %s) RETURNING ID_OrderPosition
                 """, (order_id, prod_id, qty, unit_amt, st))
-                pos_ids.append(cur.fetchone()[0])
+                pos_id = cur.fetchone()[0]
+                pos_ids.append(pos_id)
+
+                if st != 'Cancelled' and random.random() < 0.20:
+                    sub_prod_id = random.choice(product_ids) 
+                    offered_qty = round(qty * random.uniform(0.9, 1.1), 3)
+                    price_diff = round(random.uniform(-100, 100), 2)
+
+                    sub_status = random.choices(['Pending', 'Accepted', 'Rejected'], weights=[10, 70, 20])[0]
+                    cur.execute("""
+                        INSERT INTO SubstitutionOffer (ID_OrderPosition, ID_Product, 
+                                                        offered_quantity, price_difference, status)
+                        VALUES (%s, %s, %s, %s, %s) RETURNING ID_SubstitutionOffer
+                    """, (pos_id, sub_prod_id, offered_qty, price_diff, sub_status))
+                    sub_offer_id = cur.fetchone()[0]
+                    if sub_status != 'Pending':
+                        manager_id = random.choice(managers)
+                        dec_type = 'Accept' if sub_status == 'Accepted' else 'Reject'
+                        cur.execute("""
+                            INSERT INTO SubstitutionDecision (ID_SubstitutionOffer, ID_Employee, decision_type)
+                            VALUES (%s, %s, %s)
+                        """, (sub_offer_id, manager_id, dec_type))
+                 
 
             active_pos = [(pid, prod_id, qty, ps) for pid, (prod_id, qty, _, ps) in zip(pos_ids, positions_data)
                           if ps != 'Cancelled']
@@ -434,7 +467,8 @@ def generate_orders_and_flow(cur, customer_ids, darkstores, product_ids,
                     actual_total += Decimal(str(actual_price))
                     fulfill_data.append((picking_id, batch_id, pos_id, actual_qty, actual_price, is_repl))
 
-                if fulfill_data:
+    
+                if fulfill_data and random.random() > 0.05:
                     placeholders = ", ".join(["(%s, %s, %s, %s, %s, %s)"] * len(fulfill_data))
                     flat = [item for row in fulfill_data for item in row]
                     cur.execute(f"""
@@ -456,10 +490,12 @@ def generate_orders_and_flow(cur, customer_ids, darkstores, product_ids,
                 """, (order_id, auth_amt))
 
                 cap_amt = final_amt if final_amt else auth_amt
+                
+                cap_status = 'Failed' if random.random() < 0.05 else 'Success'
                 cur.execute("""
                     INSERT INTO Transactions (ID_Order, operation_type, amount, currency, status)
-                    VALUES (%s, 'Capture', %s, 'RUB', 'Success')
-                """, (order_id, cap_amt))
+                    VALUES (%s, 'Capture', %s, 'RUB', %s)
+                """, (order_id, cap_amt, cap_status))
 
                 if final_amt and abs(final_amt - auth_amt) > 0.01:
                     corr = round(final_amt - auth_amt, 2)
@@ -477,7 +513,8 @@ def generate_orders_and_flow(cur, customer_ids, darkstores, product_ids,
                     VALUES (%s, %s, %s, %s)
                 """, (promo_id, order_id, disc, created))
 
-            if final_status in ('Delivering', 'Delivered') and couriers:
+            
+            if final_status in ('Delivering', 'Delivered') and couriers and random.random() > 0.05:
                 courier_id = random.choice(couriers)
                 max_w = round(random.uniform(15, 30), 3)
 
@@ -512,6 +549,7 @@ def generate_orders_and_flow(cur, customer_ids, darkstores, product_ids,
     print(f"Orders & Flow: {order_count}")
 
 
+
 def generate_writeoffs(cur, darkstores, product_ids, vendor_ids, managers):
     now = datetime.datetime.now(datetime.timezone.utc)
 
@@ -542,9 +580,8 @@ def generate_writeoffs(cur, darkstores, product_ids, vendor_ids, managers):
 
             wo_qty = round(random.uniform(1, init_qty), 3)
             reason = random.choice([
-                'Истек срок годности', 'Повреждение упаковки',
-                'Несоответствие качества', 'Пересорт'
-            ])
+            'Expirated', 'Damaged', 'OK'
+             ])
             conf_status = random.choices(['Confirmed', 'Pending'], weights=[80, 20])[0]
 
             cur.execute("""
